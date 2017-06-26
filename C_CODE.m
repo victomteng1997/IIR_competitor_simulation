@@ -1,6 +1,6 @@
 % here we also start with a low pass filter:
 
-%% We can assume a prescribed group delay value based on our experiment
+%% We can assume a prescribed group delay value based on our experiment, generate the iir filter
 % Firstly generate the fir filter
 f = [0 0.3 0.4 0.6 0.7 1];                   %a passband of 0.4-0.6
 a = [0 0.0 1.0 1.0 0.0 0];
@@ -40,4 +40,4 @@ D = 0;
 %then generate iir
 [b,a] = ss2tf(A_t,B_t,C_t,D);
 
-%% 
+%% Second part: Do optimization
