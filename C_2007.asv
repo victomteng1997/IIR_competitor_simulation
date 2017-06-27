@@ -46,5 +46,5 @@ while k < 51           %assume we are at the k th iteration
     for i = 1:sam
         A_k = A_k + pi/1000*W_k(i)*real(c(:,i)*c(:,i)');
     end
-    A_k_head = alpha*A_k+(1-alpha)*G_head;
+    A_k_head = alpha*A_k+(1-alpha)*
 end
