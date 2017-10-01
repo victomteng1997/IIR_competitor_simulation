@@ -1,7 +1,7 @@
 %% step 1: Determine filter specifications:
 n = 12;           %numerator order (N = 12)
 m = 12;           %denominator order
-gama = 0.8;
+gamma = 0.8;
 e = 10^(-6);
 num = ones(n+1,1);
 den = zeros(m+1,1);
@@ -71,13 +71,21 @@ while k < 200           %assume we are at the k th iteration
     A_k_head = alpha*A_k+(1-alpha)*G_head;
     %calculate B here.
     B = real(c(:,1)*c(:,1)')^0.5;
-    for k = 2:sam
-        B = [B,(real(c(:,k)*c(:,k)')^0.5)];
+    for p = 2:sam
+        B = [B ;(real(c(:,p)*c(:,p)')^0.5)];
     end
-    F_k = gama*(A_k_head)^0.5;
+    % c = c(:);
+    F_k = gamma*(A_k_head)^0.5;
     x_k = [num;den];
     g_k = A_k_head^0.5*x_k;
+    mu = 0.1;
 
     %solve (13) with constrain (18);
-    best_x = fmincon(@(x) objective2007(x,F_k,g_k), inital) %need to solve the constraint problem here; discuss it later.
+%     best_x = fmincon(@(x) objective2007(x,F_k,g_k), initial, B, c) %need to solve the constraint problem here; discuss it later.
+    disp(k);
+    disp(x_k);
+    ita = mosek_optimizer(gamma, mu, den, B, x_k, sam, F_k, g_k);
+    num = num + ita(1:13);
+    den = den + ita(14:26);
+    disp(ita);
 end
