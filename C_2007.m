@@ -19,7 +19,7 @@ end
 % passband of 0-0.2 pi, transition band from 0.2pi to 0.25 pi
 D = zeros(1,sam);
 for i = 1:200
-    D(i) = 1;
+    D(i) = exp(1j*pi*i/1000);
 end
 initial = [num;den];
 k = 0;
@@ -88,4 +88,5 @@ while k < 200           %assume we are at the k th iteration
     num = num + ita(1:13);
     den = den + ita(14:26);
     disp(ita);
+
 end

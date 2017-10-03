@@ -2,42 +2,32 @@
 
 %% We can assume a prescribed group delay value based on our experiment, generate the iir filter
 % Firstly generate the fir filter
-f = [0 0.3 0.4 0.6 0.7 1];                   %a passband of 0.4-0.6
+f = [0 0.2 0.3 0.65 0.8 1];                   %a passband of 0.4-0.6
 a = [0 0.0 1.0 1.0 0.0 0];
 b = firpm(39,f,a,[30,1,30]);
+len = length(b);
+a = zeros(1,len);
+a(1) = 1;
+sys = tf(b,a,0.05);
+GRED = balancmr(sys);
+es = 0.01; %stability margin
+tau = 15;
 
-
-% Then plot the hankel singular value
-matrix = Hankel(b);
-[v,d] = eig(matrix);
-singular_value = abs(d);
-dim = size(singular_value);
-% Get the proper order k
-order = zeros(1,dim(1));
-for i = 1:dim(1)
-    order(i) = singular_value(i,i);
-end
-order = sort(order);
-s = sum(order);
-for i = 1:length(order)
-    if sum(order(1:i)) >0.02*s       % here I assume 0.02 is a value that is insignificent
-        k = i;
-        break
-    end
-end
-k = length(order)-k;   %this is the reduced order
-
-% Now get state space representation
-truncated = zeros(k,k);
-for i = 1:k
-    truncated(i,i) = order(length(order)-i+1);
-end
-n = dim(1);
-A_t = v(2:n,1:k)'*v(1:n-1,1:k);
-B_t = v(1,1:k)';
-C_t = v(1,1:k)*truncated;
-D = 0;
+A_t = GRED.A;
+B_t = GRED.B;
+C_t = GRED.C;
+D = GRED.D;
 %then generate iir
-[b,a] = ss2tf(A_t,B_t,C_t,D);
-
+[a,b] = ss2tf(A_t,B_t,C_t,D);     %a, b are numerators and denominators ( a very special case here, the author use a as num and b as den)
+[h,w] = freqz(a,b,'whole',2001);
+plot(w/pi,20*log10(abs(h)))
+xlabel('Normalized Frequency (\times\pi rad/sample)')
+ylabel('Magnitude (dB)')
 %% Second part: Do optimization
+c = [a,b];
+c = transpose(c);
+k = 0;
+while k < 200
+    k = k+1;
+    x = transpose(transpose(c)*tau);
+end
