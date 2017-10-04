@@ -7,7 +7,7 @@ while k <= 40;
     % Another model reduction method
     %   此处显示详细说明
     % test inital iir
-    f = [0 0.4  0.6 1];                   %a passband of 0.4-0.6
+    f = [0 0.5  0.6 1];                   %a passband of 0.4-0.6
     a = [1.0 1.0 0.0 0];
     b = firpm(k,f,a,[100,500]);
     len = length(b);

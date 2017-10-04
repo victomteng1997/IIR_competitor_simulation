@@ -12,8 +12,8 @@ alpha = 0.9999;          %this is a parameter which I need to think about. Don't
 % weighted complex error in a vector form (Chooose 1000 sample points)
 sam = 1000;
 W = ones(1,sam);
-for i = 201:250;
-    W(i) = 0.1;
+for i = 400:600;
+    W(i) = 0.01;
 end
 % idea frequency response D(w): here I choose a low pass filter with a
 % passband of 0-0.2 pi, transition band from 0.2pi to 0.25 pi
@@ -21,7 +21,6 @@ D = zeros(1,sam);
 for i = 1:200
     D(i) = exp(1j*pi*i/1000);
 end
-initial = [num;den];
 k = 0;
 W_k = zeros(1,sam);
 c = zeros(m+n+2,sam);
@@ -41,7 +40,7 @@ end
 %% Step 2: start the loop
 while k < 200           %assume we are at the k th iteration
     k = k+1;
-    [Q,w] = freqz(n,1,sam);
+    [Q,w] = freqz(den,1,sam);
     for i = 1:1000
        W_k(i) = W(i)^2/(abs(Q(i)))^2;
     end
@@ -76,7 +75,7 @@ while k < 200           %assume we are at the k th iteration
     end
     % c = c(:);
     F_k = gamma*(A_k_head)^0.5;
-    x_k = [num;den];
+    x_k = [den;num];
     g_k = A_k_head^0.5*x_k;
     mu = 0.1;
 
@@ -88,5 +87,6 @@ while k < 200           %assume we are at the k th iteration
     num = num + ita(1:13);
     den = den + ita(14:26);
     disp(ita);
+    x_k = [den;num];
 
 end
