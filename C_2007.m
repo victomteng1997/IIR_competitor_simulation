@@ -84,8 +84,8 @@ while k < 200           %assume we are at the k th iteration
     disp(k);
     disp(x_k);
     ita = mosek_optimizer(gamma, mu, den, B, x_k, sam, F_k, g_k);
-    num = num + ita(1:13);
-    den = den + ita(14:26);
+    num = num + ita(14:26);
+    den = den + ita(1:13);
     disp(ita);
     x_k = [den;num];
 
